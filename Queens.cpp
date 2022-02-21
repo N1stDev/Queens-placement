@@ -1,34 +1,28 @@
 #include<iostream>
+#include<vector>
+#include<algorithm>
 
 using namespace std;
 
 int n = 8;
-int success = 0;
+int solutions = 0;
 
 void print_desk(int** desk) {
-	//if (success == 1) {
-		for (int i = 0; i < n; i++) {
-			for (int j = 0; j < n; j++) {
-				if (desk[i][j] > 9) {
-					cout << desk[i][j] << "  ";
-				}
-				else {
-					cout << desk[i][j] << "   ";
-				}
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) {
+			if (desk[i][j] > 9) {
+				cout << desk[i][j] << "  ";
 			}
-			cout << endl;
+			else {
+				cout << desk[i][j] << "   ";
+			}
 		}
-		cout << "\n\n\n\n";
-	//}
-	//else {
-		//cout << "No solution!\n";
-	//}
+		cout << endl;
+	}
+	cout << "\n\n\n\n";
 }
 
 void create_desk(int** desk) {
-	for (int i = 0; i < n; i++) {
-		desk[i] = new int[n];
-	}
 	for (int i = 0; i < n; i++) {
 		for (int j = 0; j < n; j++) {
 			desk[i][j] = 0;
@@ -39,7 +33,7 @@ void create_desk(int** desk) {
 bool on_diag(int i, int j, int x, int y) {
 	int x_tmp, y_tmp;
 	x_tmp = x, y_tmp = y;
-	while ((x_tmp < n) && (x_tmp >=0) && (y_tmp < n) && (y_tmp >=0)) {
+	while ((x_tmp < n) && (x_tmp >= 0) && (y_tmp < n) && (y_tmp >= 0)) {
 		if ((x_tmp == i) && (y_tmp == j)) {
 			return 1;
 		}
@@ -91,34 +85,23 @@ bool check_pos(int** desk, int x, int y) {
 }
 
 void solution(int** desk, int x, int y) {
-		if ((check_pos(desk, x, y) == 0) && (x < n)) {
-			for (int i = 1; i < n; i++) {
-				solution(desk, x + i, y);
-				if (success == 1) {
-					return;
-				}
-			}
-		}
-		else if ((check_pos(desk, x, y) == 0) && (x == n)) {
-			return;
-		}
-		else if (check_pos(desk, x, y) == 1) {
-			desk[x][y] = 1;
-			solution(desk, 0, y + 1);
-			if (success == 0) {
-				for (int i = 1; i < n; i++) {
-					desk[x][y] = 0;
-					solution(desk, x + 1, y);
-				}
-			}
-		}
-		else if (y == n) {
-			success = 1;
-			return;
-		}
+	if (x == n) {
+		return;
+	}
+	else if (y == n) {
+		print_desk(desk);
+		solutions++;
+	}
+	else if (check_pos(desk, x, y) == 0) {
+		solution(desk, x + 1, y);
+	}
+	else if (check_pos(desk, x, y) == 1) {
+		desk[x][y] = 1;
+		solution(desk, 0, y + 1);
+		desk[x][y] = 0;
+		solution(desk, x + 1 , y);
+	}
 }
-
-
 
 void delete_desk(int** desk) {
 	for (int i = 0; i < n; i++) {
@@ -129,13 +112,16 @@ void delete_desk(int** desk) {
 
 int main() {
 
-	int x = 0, y = 0;
+	int x = 0, y = 0, key = 1;
 	int** desk = new int* [n];
+	for (int i = 0; i < n; i++) {
+		desk[i] = new int[n];
+	}
 
 	create_desk(desk);
 	solution(desk, x, y);
-	print_desk(desk);
 	delete_desk(desk);
+	cout << "Solutions number: " << solutions << endl;
 
 	return 0;
 }
