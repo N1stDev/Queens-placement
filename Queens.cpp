@@ -4,7 +4,7 @@
 
 using namespace std;
 
-int n = 8;
+int n = 20;
 int solutions = 0;
 
 void print_desk(int** desk) {
@@ -23,6 +23,9 @@ void print_desk(int** desk) {
 }
 
 void create_desk(int** desk) {
+	for (int i = 0; i < n; i++) {
+		desk[i] = new int[n];
+	}
 	for (int i = 0; i < n; i++) {
 		for (int j = 0; j < n; j++) {
 			desk[i][j] = 0;
@@ -111,17 +114,19 @@ void delete_desk(int** desk) {
 }
 
 int main() {
+	unsigned int start = clock();
 
 	int x = 0, y = 0, key = 1;
 	int** desk = new int* [n];
-	for (int i = 0; i < n; i++) {
-		desk[i] = new int[n];
-	}
-
+	
 	create_desk(desk);
 	solution(desk, x, y);
 	delete_desk(desk);
-	cout << "Solutions number: " << solutions << endl;
+	//cout << "Solutions number: " << solutions << endl;
+
+	unsigned int end = clock();
+
+	cout << "Time: " << end - start << endl;
 
 	return 0;
 }
